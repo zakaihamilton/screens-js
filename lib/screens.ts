@@ -113,18 +113,3 @@ if (typeof document !== "undefined") {
 }
 
 export default screens as any;
-
-Object.defineProperty(Object.prototype, "me", {
-    get() {
-        if (this._me) {
-            return this._me;
-        }
-        else {
-            screens.objectify(this, "");
-            return this._me;
-        }
-    },
-    set(me) {
-        this._me = me;
-    }
-});
