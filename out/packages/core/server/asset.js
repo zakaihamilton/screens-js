@@ -38,7 +38,7 @@ screens_1.default.CoreAsset.init = function () {
     ];
     setTimeout(() => {
         this.mapping.map((mapping) => {
-            screens_1.default.CoreHttp.register(mapping.match, async (req, resp) => {
+            screens_1.default.CoreHttp.register(mapping.match, async (req, res) => {
                 let path = req.url.substr(1);
                 let headers = {
                     "Access-Control-Allow-Methods": "*",
@@ -51,12 +51,12 @@ screens_1.default.CoreAsset.init = function () {
                     if (mapping.transform) {
                         content = await mapping.transform(content);
                     }
-                    resp.writeHead(200, headers);
-                    resp.end(content);
+                    res.writeHead(200, headers);
+                    res.end(content);
                 }
                 catch (err) {
-                    resp.writeHead(401, headers);
-                    resp.end(err.message || err);
+                    res.writeHead(401, headers);
+                    res.end(err.message || err);
                 }
             });
         });
