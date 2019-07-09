@@ -2,7 +2,7 @@
     "name": "screens-js",
     "version": "1.0.0",
     "description": "Screens Framework",
-    "main": "platform/screens.js",
+    "main": "lib/screens.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node -r ts-node/register project/screens.tsx",
