@@ -110,7 +110,7 @@ var screens = {
     },
     async startup() {
         await screens.import("out/packages");
-        return await screens.init();
+        return screens.init();
     }
 };
 if (typeof global !== "undefined") {

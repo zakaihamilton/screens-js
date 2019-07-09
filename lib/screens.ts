@@ -100,9 +100,9 @@ var screens = {
             });
         }
     },
-    async startup() {
-        await screens.import("packages");
-        await screens.init();
+    async startup(): Promise<object> {
+        await screens.import("out/packages");
+        return screens.init();
     }
 }
 
