@@ -11,11 +11,16 @@ var screens = {
     init() {
         const components = Object.entries(screens).filter(([key, comp]) => /^[A-Z]/.test(key[0]));
         components.map(([key, comp]) => screens.objectify(comp, ""));
-        return Promise.all(components.map(item => {
-            const [, comp] = item;
-            if (comp.hasOwnProperty("init")) {
-                comp.init.call(comp);
+        return Promise.all(components.map(async (item) => {
+            const [key, comp] = item;
+            if (comp.isInitialized) {
+                return;
             }
+            if (comp.init) {
+                await comp.init.call(comp);
+            }
+            comp.isInitialized = true;
+            return key;
         }));
     },
     objectify(object, compId) {
@@ -102,6 +107,10 @@ var screens = {
                 parentNode.appendChild(item);
             });
         }
+    },
+    async startup() {
+        await screens.import("out/packages");
+        return await screens.init();
     }
 };
 if (typeof global !== "undefined") {
