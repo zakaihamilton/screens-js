@@ -57,9 +57,6 @@ var screens = {
             const fs = await Promise.resolve().then(() => __importStar(require("fs")));
             const dir = process.cwd();
             let path = root;
-            if (path.charAt(0) !== "/") {
-                path = pathModule.resolve(dir, path);
-            }
             var names = fs.readdirSync(path);
             const dirs = [];
             for (let name of names) {
@@ -69,7 +66,8 @@ var screens = {
                 let child = path + "/" + name;
                 if (name.endsWith(".js")) {
                     console.log("importing " + name);
-                    await Promise.resolve().then(() => __importStar(require(child)));
+                    let relPath = child.replace(/^out\//, "../");
+                    await Promise.resolve().then(() => __importStar(require(relPath)));
                     continue;
                 }
                 let isDirectory = fs.lstatSync(child).isDirectory();
