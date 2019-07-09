@@ -1,6 +1,6 @@
 {
     "name": "screens-js",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "Screens Framework",
     "main": "out/lib/screens.js",
     "types": "out/lib/screens.d.ts",
@@ -25,5 +25,9 @@
         "react-dom": "^16.8.6",
         "typescript": "^3.5.2",
         "@types/node": "^12.6.1"
+    },
+    "devDependencies": {
+        "@types/react": "^16.8.23",
+        "@types/react-dom": "^16.8.4"
     }
 }

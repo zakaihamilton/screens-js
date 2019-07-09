@@ -49,11 +49,11 @@ var screens = {
         return object;
     },
     platform: typeof window !== "undefined" ? "browser" : "server",
-    async import(root: string) {
+    async import(root: string, directory: string, handler: (path: string) => void) {
         if (screens.platform === "server") {
             const pathModule = await import("path");
             const fs = await import("fs");
-            let path = pathModule.resolve(__dirname, "../" + root);
+            let path = pathModule.resolve(directory, root);
             var names = fs.readdirSync(path);
             const dirs = [];
             for (let name of names) {
@@ -63,7 +63,7 @@ var screens = {
                 let child = root + "/" + name;
                 if (name.endsWith(".js")) {
                     console.log("importing " + name);
-                    await import("../" + child);
+                    await handler(child);
                     continue;
                 }
                 let isDirectory = fs.lstatSync(path + "/" + name).isDirectory();
@@ -73,7 +73,7 @@ var screens = {
             }
             if (dirs.length) {
                 for (let file of dirs) {
-                    await screens.import(file);
+                    await screens.import(file, directory, handler);
                 }
             }
         } else if (screens.platform === "browser") {
@@ -99,7 +99,7 @@ var screens = {
         }
     },
     async startup(): Promise<object> {
-        await screens.import("packages");
+        await screens.import("../packages", __dirname, async (path) => await import(path));
         return screens.init();
     }
 }
