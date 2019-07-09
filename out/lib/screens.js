@@ -118,18 +118,4 @@ if (typeof document !== "undefined") {
     document.screens = screens;
 }
 exports.default = screens;
-Object.defineProperty(Object.prototype, "me", {
-    get() {
-        if (this._me) {
-            return this._me;
-        }
-        else {
-            screens.objectify(this, "");
-            return this._me;
-        }
-    },
-    set(me) {
-        this._me = me;
-    }
-});
 //# sourceMappingURL=screens.js.map

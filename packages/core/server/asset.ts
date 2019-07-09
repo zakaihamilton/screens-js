@@ -54,7 +54,7 @@ screens.CoreAsset.init = function () {
                 }
                 catch (err) {
                     resp.writeHead(401, headers);
-                    resp.end(err);
+                    resp.end(err || err.message);
                 }
             });
         });
