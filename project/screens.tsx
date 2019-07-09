@@ -1,6 +1,6 @@
 import screens from "../lib/screens"
 
-screens.import("packages").then(() => {
+screens.import("out/packages").then(() => {
     console.log("import complete");
     screens.init().then(() => {
         console.log("init complete");

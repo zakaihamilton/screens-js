@@ -8,12 +8,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "runtimeArgs": [
-                "-r",
-                "ts-node/register"
-            ],
             "args": [
-                "${workspaceFolder}/project/screens.tsx"
+                "${workspaceFolder}/out/project/screens.js"
             ],
             "cwd": "${workspaceRoot}"
         }

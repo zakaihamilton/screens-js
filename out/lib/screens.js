@@ -67,7 +67,7 @@ var screens = {
                     continue;
                 }
                 let child = path + "/" + name;
-                if (name.endsWith(".ts") || name.endsWith(".tsx")) {
+                if (name.endsWith(".js")) {
                     console.log("importing " + name);
                     await Promise.resolve().then(() => __importStar(require(child)));
                     continue;

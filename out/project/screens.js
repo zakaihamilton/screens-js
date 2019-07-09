@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const screens_1 = __importDefault(require("../lib/screens"));
-screens_1.default.import("packages").then(() => {
+screens_1.default.import("out/packages").then(() => {
     console.log("import complete");
     screens_1.default.init().then(() => {
         console.log("init complete");
