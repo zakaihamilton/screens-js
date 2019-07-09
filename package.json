@@ -3,6 +3,7 @@
     "version": "1.0.6",
     "description": "Screens Framework",
     "main": "out/lib/screens.js",
+    "types": "out/lib/screens.d.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node out/project/screens.js",

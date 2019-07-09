@@ -17,3 +17,4 @@ screens_1.default.startup().then(() => {
         resp.end(`<html><!DOCTYPE html><head></head><body>${new Date().toString()}</body></html>`);
     });
 });
+//# sourceMappingURL=screens.js.map

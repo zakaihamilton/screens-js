@@ -36,3 +36,4 @@ screens_1.default.CoreHttp.init = function () {
     server.listen(port);
     this.register = this.me.CoreRoute.register;
 };
+//# sourceMappingURL=http.js.map

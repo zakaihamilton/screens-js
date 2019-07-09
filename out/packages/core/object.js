@@ -53,3 +53,4 @@ screens_1.default.CoreObject = function () {
         return results;
     };
 };
+//# sourceMappingURL=object.js.map

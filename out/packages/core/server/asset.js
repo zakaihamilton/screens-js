@@ -62,3 +62,4 @@ screens_1.default.CoreAsset.init = function () {
         });
     });
 };
+//# sourceMappingURL=asset.js.map

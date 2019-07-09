@@ -25,3 +25,4 @@ screens_1.default.CoreListener = function () {
         listeners.map((listener) => listener.apply(this.me[compId], args));
     };
 };
+//# sourceMappingURL=listener.js.map

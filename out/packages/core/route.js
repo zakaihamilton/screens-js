@@ -32,3 +32,4 @@ screens_1.default.CoreRoute = function () {
         }
     };
 };
+//# sourceMappingURL=route.js.map
