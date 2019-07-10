@@ -19,8 +19,7 @@ screens.CoreHttp.init = function () {
                 res
             }
         });
-        const url = req.url;
-        routes.notify(session, url, req, res);
+        routes.notify(req.url, session.me);
     });
     let port = process.env.PORT || 8080;
     server.listen(port);

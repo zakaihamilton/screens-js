@@ -21,13 +21,13 @@ screens_1.default.CoreRoute = function () {
             callbacks.splice(index, 1);
         }
     };
-    this.notify = (_this, match, ...args) => {
+    this.notify = (match, ...args) => {
         for (const [pattern, callbacks] of this.routes.entries()) {
             let result = match.match(pattern);
             if (result) {
                 result.shift();
                 args = [...args, ...result];
-                callbacks.map((callback) => callback.apply(_this, args));
+                callbacks.map((callback) => callback.apply(null, args));
             }
         }
     };

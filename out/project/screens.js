@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const screens_1 = __importDefault(require("../lib/screens"));
 screens_1.default.startup().then(() => {
     console.log("init complete");
-    screens_1.default.CoreHttp.register(/^\/$/, async function (req, res) {
+    screens_1.default.CoreHttp.register(/^\/$/, async function (me) {
     });
 });
 //# sourceMappingURL=screens.js.map

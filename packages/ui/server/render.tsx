@@ -26,7 +26,7 @@ screens.UIRender = function () {
         stream.pipe(res, { end: false });
         return new Promise((resolve => {
             stream.on('end', () => {
-                res.write("</div></body></html>");
+                res.write("</body></html>");
                 res.end();
                 resolve();
             });

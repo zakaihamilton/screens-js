@@ -17,13 +17,13 @@ screens.CoreRoute = function () {
             callbacks.splice(index, 1);
         }
     };
-    this.notify = (_this: any, match: string, ...args: any) => {
+    this.notify = (match: string, ...args: any) => {
         for (const [pattern, callbacks] of this.routes.entries()) {
             let result = match.match(pattern);
             if (result) {
                 result.shift();
                 args = [...args, ...result];
-                callbacks.map((callback: any) => callback.apply(_this, args));
+                callbacks.map((callback: any) => callback.apply(null, args));
             }
         }
     }
