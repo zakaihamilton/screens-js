@@ -16,13 +16,19 @@ screens.UIRender = function () {
         if (!res) {
             throw "Not attached to CoreHttp";
         }
-        if (!Component) {
-            return;
-        }
         res.writeHead(200, this.headers);
-        let title = this.title ? `<title>${this.title}</title>` : "";
-        res.write(`<!DOCTYPE html><html><head>${title}${this.head || ""}</head><body>`);
-        const stream = renderToNodeStream(<Component />);
+        res.write("<!DOCTYPE html>");
+        let render = <html>
+            <head>
+                {this.title && <title>${this.title}</title>}
+                <link rel="stylesheet" type="text/css" href="packages.css"></link>
+                {this.head && this.head}
+            </head>
+            <body>
+                {Component && <Component />}
+            </body>
+        </html>;
+        const stream = renderToNodeStream(render);
         stream.pipe(res, { end: false });
         return new Promise((resolve => {
             stream.on('end', () => {

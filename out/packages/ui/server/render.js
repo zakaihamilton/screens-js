@@ -20,13 +20,17 @@ screens_1.default.UIRender = function () {
         if (!res) {
             throw "Not attached to CoreHttp";
         }
-        if (!Component) {
-            return;
-        }
         res.writeHead(200, this.headers);
-        let title = this.title ? `<title>${this.title}</title>` : "";
-        res.write(`<!DOCTYPE html><html><head>${title}${this.head || ""}</head><body>`);
-        const stream = server_1.renderToNodeStream(react_1.default.createElement(Component, null));
+        res.write("<!DOCTYPE html>");
+        let render = react_1.default.createElement("html", null,
+            react_1.default.createElement("head", null,
+                this.title && react_1.default.createElement("title", null,
+                    "$",
+                    this.title),
+                react_1.default.createElement("link", { rel: "stylesheet", type: "text/css", href: "packages.css" }),
+                this.head && this.head),
+            react_1.default.createElement("body", null, Component && react_1.default.createElement(Component, null)));
+        const stream = server_1.renderToNodeStream(render);
         stream.pipe(res, { end: false });
         return new Promise((resolve => {
             stream.on('end', () => {
