@@ -11,6 +11,8 @@ interface mapping {
         prefix: string;
         separator: string;
         suffix: string;
+        start: string;
+        end: string;
     }
 }
 
@@ -34,6 +36,8 @@ screens.CoreAsset.init = function () {
             match: /\.js$/,
             text: true,
             collect: {
+                prefix: "\n(function (exports) {",
+                suffix: "\n})({});",
                 separator: "\n\n/***********/\n\n"
             }
         },
@@ -42,9 +46,9 @@ screens.CoreAsset.init = function () {
             match: /\.json$/,
             text: true,
             collect: {
-                prefix: "[",
+                start: "[",
                 separator: ",",
-                suffix: "]"
+                end: "]"
             }
         }
     ];
@@ -59,6 +63,9 @@ screens.CoreAsset.init = function () {
             let itemPath = path.resolve(root, item);
             const isDirectory = (await fs.promises.lstat(itemPath)).isDirectory();
             if (isDirectory) {
+                if (item === "server") {
+                    continue;
+                }
                 collection.push(... await this.collect(itemPath, pattern));
             }
             else if (itemPath.match(pattern)) {
@@ -86,18 +93,19 @@ screens.CoreAsset.init = function () {
                 filePaths = filePaths.filter(Boolean);
                 filePaths = filePaths.filter(filePath => fs.existsSync(filePath));
                 if (!filePaths.length) {
-                    res.writeHead(401, headers);
+                    res.writeHead(404, headers);
                     res.end(root + " does not exist!");
                 }
                 if (filePaths.length > 1) {
                     headers["Transfer-Encoding"] = "chunked";
-                    if (mapping.collect && mapping.collect.prefix) {
-                        res.write(mapping.collect.prefix);
+                    if (mapping.collect && mapping.collect.start) {
+                        res.write(mapping.collect.start);
                     }
                 }
                 console.log(filePaths.join(","));
                 res.writeHead(200, headers);
-                for (const filePath of filePaths) {
+                for (let fileIndex = 0; fileIndex < filePaths.length; fileIndex++) {
+                    const filePath = filePaths[fileIndex];
                     const options = mapping.text ? { encoding: "utf-8" } : {};
                     let content = await fs.promises.readFile(filePath, options);
                     if (mapping.transform) {
@@ -107,15 +115,21 @@ screens.CoreAsset.init = function () {
                         res.end(content);
                     }
                     else {
+                        if (mapping.collect && mapping.collect.prefix) {
+                            res.write(mapping.collect.prefix);
+                        }
                         res.write(content);
-                        if (mapping.collect && mapping.collect.separator) {
+                        if (mapping.collect && mapping.collect.suffix) {
+                            res.write(mapping.collect.suffix);
+                        }
+                        if (fileIndex < filePaths.length - 1 && mapping.collect && mapping.collect.separator) {
                             res.write(mapping.collect.separator);
                         }
                     }
                 }
                 if (filePaths.length > 1) {
-                    if (mapping.collect && mapping.collect.suffix) {
-                        res.write(mapping.collect.suffix);
+                    if (mapping.collect && mapping.collect.end) {
+                        res.write(mapping.collect.end);
                     }
                     res.end();
                 }

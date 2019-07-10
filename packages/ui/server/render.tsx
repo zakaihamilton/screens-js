@@ -22,6 +22,9 @@ screens.UIRender = function () {
             <head>
                 {this.title && <title>${this.title}</title>}
                 <link rel="stylesheet" type="text/css" href="packages.css"></link>
+                <link rel="stylesheet" type="text/css" href="node_modules/screens-js/packages.css"></link>
+                <script src="node_modules/screens-js/out/packages.js"></script>
+                <script src="out/packages.js"></script>
                 {this.head && this.head}
             </head>
             <body>
