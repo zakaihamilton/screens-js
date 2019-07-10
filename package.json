@@ -21,10 +21,11 @@
     },
     "homepage": "https://github.com/zakaihamilton/screens-js#readme",
     "dependencies": {
+        "@types/node": "^12.6.1",
+        "npm": "^6.10.0",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
-        "typescript": "^3.5.2",
-        "@types/node": "^12.6.1"
+        "typescript": "^3.5.2"
     },
     "devDependencies": {
         "@types/react": "^16.8.23",
