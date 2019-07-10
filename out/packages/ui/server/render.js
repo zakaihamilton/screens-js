@@ -29,7 +29,9 @@ screens_1.default.UIRender = function () {
                     this.title),
                 react_1.default.createElement("link", { rel: "stylesheet", type: "text/css", href: "packages.css" }),
                 react_1.default.createElement("link", { rel: "stylesheet", type: "text/css", href: "node_modules/screens-js/packages.css" }),
+                react_1.default.createElement("script", { src: "node_modules/screens-js/out/lib.js" }),
                 react_1.default.createElement("script", { src: "node_modules/screens-js/out/packages.js" }),
+                react_1.default.createElement("script", { src: "out/lib.js" }),
                 react_1.default.createElement("script", { src: "out/packages.js" }),
                 this.head && this.head),
             react_1.default.createElement("body", null, Component && react_1.default.createElement(Component, null)));
