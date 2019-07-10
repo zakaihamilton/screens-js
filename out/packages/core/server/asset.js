@@ -31,7 +31,7 @@ screens_1.default.CoreAsset.init = function () {
             match: /\.js$/,
             text: true,
             collect: {
-                prefix: "\n(function (exports) {",
+                prefix: "\n(function (exports, require) {",
                 suffix: "\n})({});",
                 separator: "\n\n/***********/\n\n"
             }
