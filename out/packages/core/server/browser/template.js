@@ -1,6 +1,7 @@
+"use strict";
 (function (exports, require) {
     //body//
-}).call(document, {}, path => {
+}).call(document, {}, (path) => {
     let name = path.split("/").pop();
     if (name === "react-dom") {
         return ReactDOM;
@@ -10,3 +11,4 @@
     }
     return document[name];
 });
+//# sourceMappingURL=template.js.map

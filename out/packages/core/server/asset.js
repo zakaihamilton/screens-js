@@ -35,7 +35,7 @@ screens_1.default.CoreAsset.init = function () {
             mime: "application/javascript",
             pattern: /\.js$/,
             text: {
-                template: "packages/core/server/template.js",
+                template: "browser/template.js",
                 separator: "\n\n/***********/\n\n"
             }
         },
@@ -138,7 +138,8 @@ screens_1.default.CoreAsset.init = function () {
     setTimeout(() => {
         this.mapping.map((mapping) => {
             if (mapping.text && mapping.text.template) {
-                mapping.text.template = fs.readFileSync(mapping.text.template, "utf8");
+                let filePath = path.resolve(__dirname, mapping.text.template);
+                mapping.text.template = fs.readFileSync(filePath, "utf8");
             }
             screens_1.default.CoreHttp.register(mapping.pattern, async (me) => {
                 const { req, res } = me.CoreHttp;
