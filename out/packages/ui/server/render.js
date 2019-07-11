@@ -8,7 +8,6 @@ const server_1 = __importDefault(require("react-dom/server"));
 const react_1 = __importDefault(require("react"));
 screens_1.default.UIRender = function () {
     this.title = "";
-    this.head = null;
     this.headers = {
         "Content-Type": "text/html",
         "Access-Control-Allow-Methods": "*",
@@ -23,10 +22,8 @@ screens_1.default.UIRender = function () {
         }
         res.writeHead(200, this.headers);
         res.write("<!DOCTYPE html>");
-        let script = await screens_1.default.CoreAsset.file("node_modules/screens-js/out/lib.js");
-        script += await screens_1.default.CoreAsset.file("node_modules/screens-js/out/packages.js");
-        script += await screens_1.default.CoreAsset.file("out/lib.js");
-        script += await screens_1.default.CoreAsset.file("out/packages.js");
+        let screens_head = await screens_1.default.CoreAsset.file("node_modules/screens-js/packages.head.html") || "";
+        let head = await screens_1.default.CoreAsset.file("packages.head.html") || "";
         let html = `
         <html>
             <head>
@@ -39,6 +36,8 @@ screens_1.default.UIRender = function () {
                 <script src="node_modules/screens-js/out/packages.js"></script>
                 <script src="out/lib.js"></script>
                 <script src="out/packages.js"></script>
+                ${screens_head}
+                ${head}
             </head>
             <body onload="document.screens.init().then(function() {document.screens.UIRender.component('${component}')})">
             <div id="react">`;

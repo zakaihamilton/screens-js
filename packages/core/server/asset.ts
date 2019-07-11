@@ -61,6 +61,13 @@ screens.CoreAsset.init = function () {
             mime: "application/json",
             pattern: /\.map$/,
             collect: false
+        },
+        {
+            mime: "application/html",
+            pattern: /\.head\.html$/,
+            text: {
+
+            }
         }
     ];
     this.collect = async (root: string, pattern: string) => {
@@ -92,7 +99,8 @@ screens.CoreAsset.init = function () {
             mapping = this.mapping.find((mapping: mapping) => root.match(mapping.pattern));
         }
         root = path.normalize(root);
-        const { dir, name } = path.parse(root);
+        let { dir, name } = path.parse(root);
+        name = name.split(".")[0];
         const folderPath = dir ? (dir + path.sep + name) : name;
         let filePaths = [root];
         if (typeof this.mapping.collect === "undefined" || this.mapping.collect) {
