@@ -44,7 +44,6 @@ screens_1.default.UIRender = function () {
             <div id="react">`;
         res.write(html);
         let render = component ? react_1.default.createElement(Component, null) : react_1.default.createElement("div", null);
-        console.log(server_1.default.renderToString(render));
         const stream = server_1.default.renderToNodeStream(render);
         stream.pipe(res, { end: false });
         return new Promise((resolve => {

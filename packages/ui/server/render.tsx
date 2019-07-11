@@ -40,7 +40,6 @@ screens.UIRender = function () {
             <div id="react">`;
         res.write(html);
         let render = component ? <Component /> : <div />;
-        console.log(ReactDOM.renderToString(render));
         const stream = ReactDOM.renderToNodeStream(render);
         stream.pipe(res, { end: false });
         return new Promise((resolve => {
