@@ -11,33 +11,39 @@ screens.UIRender = function () {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "*"
     };
-    this.component = async (Component: any) => {
+    this.component = async (component: string) => {
+        let Component = screens[component];
         let { res } = this.me.CoreHttp;
         if (!res) {
             throw "Not attached to CoreHttp";
         }
         res.writeHead(200, this.headers);
         res.write("<!DOCTYPE html>");
-        let render = <html>
+        let script = await screens.CoreAsset.file("node_modules/screens-js/out/lib.js");
+        script += await screens.CoreAsset.file("node_modules/screens-js/out/packages.js");
+        script += await screens.CoreAsset.file("out/lib.js");
+        script += await screens.CoreAsset.file("out/packages.js");
+        let html = `
+        <html>
             <head>
-                {this.title && <title>${this.title}</title>}
+                <title>${this.title}</title>
                 <link rel="stylesheet" type="text/css" href="packages.css"></link>
                 <link rel="stylesheet" type="text/css" href="node_modules/screens-js/packages.css"></link>
+                <script src="node_modules/react/umd/react.development.js?template=false"></script>
+                <script src="node_modules/react-dom/umd/react-dom.development.js?template=false"></script>
                 <script src="node_modules/screens-js/out/lib.js"></script>
                 <script src="node_modules/screens-js/out/packages.js"></script>
                 <script src="out/lib.js"></script>
                 <script src="out/packages.js"></script>
-                {this.head && this.head}
             </head>
-            <body>
-                {Component && <Component />}
-            </body>
-        </html>;
+            <body onload="document.screens.init().then(function() {document.screens.UIRender.component('${component}')})">`;
+        res.write(html);
+        let render = component ? <Component /> : <div />;
         const stream = renderToNodeStream(render);
         stream.pipe(res, { end: false });
         return new Promise((resolve => {
             stream.on('end', () => {
-                res.write("</body></html>");
+                res.write("\n</body>\n</html>");
                 res.end();
                 resolve();
             });

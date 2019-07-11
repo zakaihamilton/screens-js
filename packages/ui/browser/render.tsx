@@ -1,9 +1,12 @@
 import screens from "../../../lib/screens";
 import ReactDOM from 'react-dom';
-import React, { useState } from 'react';
+import React from 'react';
 
 screens.UIRender = function () {
-    this.component = async (Component: any) => {
-        ReactDOM.hydrate(Component, null, undefined);
-    };
+
+};
+
+screens.UIRender.component = async (component: string) => {
+    let Component = screens[component];
+    ReactDOM.hydrate(<Component />, document.body, undefined);
 };

@@ -4,15 +4,16 @@ import screens from "../../../lib/screens";
 
 interface mapping {
     mime: string;
-    match: RegExp;
+    pattern: RegExp;
     transform: any;
-    text: boolean;
-    collect?: {
+    collect?: boolean;
+    text?: {
         prefix: string;
         separator: string;
         suffix: string;
         start: string;
         end: string;
+        template: string;
     }
 }
 
@@ -24,32 +25,42 @@ screens.CoreAsset.init = function () {
     this.mapping = [
         {
             mime: "text/css",
-            match: /\.css$/,
-            text: true
+            pattern: /\.css$/,
+            text: {
+
+            }
         },
         {
-            "mime": "image/png",
-            match: /\.png$/
+            mime: "image/png",
+            pattern: /\.png$/
         },
         {
-            "mime": "application/javascript",
-            match: /\.js$/,
-            text: true,
-            collect: {
-                prefix: "\n(function (exports, require) {\n",
-                suffix: "\n})({}, );",
+            mime: "application/javascript",
+            pattern: /\.js\?template=false$/,
+            text: {
+            }
+        },
+        {
+            mime: "application/javascript",
+            pattern: /\.js$/,
+            text: {
+                template: "packages/core/server/template.js",
                 separator: "\n\n/***********/\n\n"
             }
         },
         {
-            "mime": "application/json",
-            match: /\.json$/,
-            text: true,
-            collect: {
+            mime: "application/json",
+            pattern: /\.json$/,
+            text: {
                 start: "[",
                 separator: ",",
                 end: "]"
             }
+        },
+        {
+            mime: "application/json",
+            pattern: /\.map$/,
+            collect: false
         }
     ];
     this.collect = async (root: string, pattern: string) => {
@@ -75,64 +86,81 @@ screens.CoreAsset.init = function () {
         collection = collection.filter(Boolean);
         return collection;
     };
+    this.file = async (root: string, mapping: mapping) => {
+        let buffer = "";
+        if (!mapping) {
+            mapping = this.mapping.find((mapping: mapping) => root.match(mapping.pattern));
+        }
+        root = path.normalize(root);
+        const { dir, name } = path.parse(root);
+        const folderPath = dir ? (dir + path.sep + name) : name;
+        let filePaths = [root];
+        if (typeof this.mapping.collect === "undefined" || this.mapping.collect) {
+            filePaths.push(...await this.collect(folderPath, mapping.pattern));
+        }
+        filePaths = filePaths.filter(Boolean);
+        filePaths = filePaths.filter(filePath => fs.existsSync(filePath));
+        if (filePaths.length > 1) {
+            if (mapping.text && mapping.text.start) {
+                buffer = mapping.text.start;
+            }
+        }
+        for (let fileIndex = 0; fileIndex < filePaths.length; fileIndex++) {
+            const filePath = filePaths[fileIndex];
+            const options = mapping.text ? { encoding: "utf-8" } : {};
+            let content = await fs.promises.readFile(filePath, options);
+            if (mapping.transform) {
+                content = await mapping.transform(content);
+            }
+            if (mapping.text && mapping.text.template) {
+                content = mapping.text.template.replace(/\/\/body\/\//, (content as string));
+            }
+            if (filePaths.length === 1) {
+                if (mapping.text && mapping.text.prefix) {
+                    content = mapping.text.prefix + content;
+                }
+                if (mapping.text && mapping.text.suffix) {
+                    content += mapping.text.suffix;
+                }
+                buffer += content;
+            }
+            else {
+                if (mapping.text && mapping.text.prefix) {
+                    buffer += mapping.text.prefix;
+                }
+                buffer += content;
+                if (mapping.text && mapping.text.suffix) {
+                    buffer += mapping.text.suffix;
+                }
+                if (fileIndex < filePaths.length - 1 && mapping.text && mapping.text.separator) {
+                    buffer += mapping.text.separator;
+                }
+            }
+        }
+        if (filePaths.length > 1) {
+            if (mapping.text && mapping.text.end) {
+                buffer += mapping.text.end;
+            }
+        }
+        return buffer;
+    };
     setTimeout(() => {
         this.mapping.map((mapping: mapping) => {
-            screens.CoreHttp.register(mapping.match, async (me: any) => {
+            if (mapping.text && mapping.text.template) {
+                mapping.text.template = fs.readFileSync(mapping.text.template, "utf8");
+            }
+            screens.CoreHttp.register(mapping.pattern, async (me: any) => {
                 const { req, res } = me.CoreHttp;
-                let root = req.url.substr(1);
-                root = path.normalize(root);
-                const { dir, name } = path.parse(root);
-                const folderPath = dir ? (dir + path.sep + name) : name;
                 const headers: any = {
                     "Access-Control-Allow-Methods": "*",
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Headers": "*",
                     "Content-Type": mapping.mime
                 };
-                let filePaths = [root, ... await this.collect(folderPath, mapping.match)];
-                filePaths = filePaths.filter(Boolean);
-                filePaths = filePaths.filter(filePath => fs.existsSync(filePath));
-                if (!filePaths.length) {
-                    res.writeHead(404, headers);
-                    res.end(root + " does not exist!");
-                }
-                if (filePaths.length > 1) {
-                    headers["Transfer-Encoding"] = "chunked";
-                    if (mapping.collect && mapping.collect.start) {
-                        res.write(mapping.collect.start);
-                    }
-                }
-                console.log(filePaths.join(","));
+                let root = req.url.substr(1).split("?")[0];
                 res.writeHead(200, headers);
-                for (let fileIndex = 0; fileIndex < filePaths.length; fileIndex++) {
-                    const filePath = filePaths[fileIndex];
-                    const options = mapping.text ? { encoding: "utf-8" } : {};
-                    let content = await fs.promises.readFile(filePath, options);
-                    if (mapping.transform) {
-                        content = await mapping.transform(content);
-                    }
-                    if (filePaths.length === 1) {
-                        res.end(content);
-                    }
-                    else {
-                        if (mapping.collect && mapping.collect.prefix) {
-                            res.write(mapping.collect.prefix);
-                        }
-                        res.write(content);
-                        if (mapping.collect && mapping.collect.suffix) {
-                            res.write(mapping.collect.suffix);
-                        }
-                        if (fileIndex < filePaths.length - 1 && mapping.collect && mapping.collect.separator) {
-                            res.write(mapping.collect.separator);
-                        }
-                    }
-                }
-                if (filePaths.length > 1) {
-                    if (mapping.collect && mapping.collect.end) {
-                        res.write(mapping.collect.end);
-                    }
-                    res.end();
-                }
+                let buffer = await this.file(root, mapping);
+                res.end(buffer);
             });
         });
     });

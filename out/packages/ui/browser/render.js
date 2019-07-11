@@ -5,9 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const screens_1 = __importDefault(require("../../../lib/screens"));
 const react_dom_1 = __importDefault(require("react-dom"));
+const react_1 = __importDefault(require("react"));
 screens_1.default.UIRender = function () {
-    this.component = async (Component) => {
-        react_dom_1.default.hydrate(Component, null, undefined);
-    };
+};
+screens_1.default.UIRender.component = async (component) => {
+    let Component = screens_1.default[component];
+    react_dom_1.default.hydrate(react_1.default.createElement(Component, null), document.body, undefined);
 };
 //# sourceMappingURL=render.js.map
