@@ -1,5 +1,5 @@
 import screens from "../../../lib/screens";
-import { renderToNodeStream } from 'react-dom/server';
+import ReactDOM from 'react-dom/server';
 import React, { useState } from 'react';
 
 screens.UIRender = function () {
@@ -36,14 +36,16 @@ screens.UIRender = function () {
                 <script src="out/lib.js"></script>
                 <script src="out/packages.js"></script>
             </head>
-            <body onload="document.screens.init().then(function() {document.screens.UIRender.component('${component}')})">`;
+            <body onload="document.screens.init().then(function() {document.screens.UIRender.component('${component}')})">
+            <div id="react">`;
         res.write(html);
         let render = component ? <Component /> : <div />;
-        const stream = renderToNodeStream(render);
+        console.log(ReactDOM.renderToString(render));
+        const stream = ReactDOM.renderToNodeStream(render);
         stream.pipe(res, { end: false });
         return new Promise((resolve => {
             stream.on('end', () => {
-                res.write("\n</body>\n</html>");
+                res.write("</div>\n</body>\n</html>");
                 res.end();
                 resolve();
             });

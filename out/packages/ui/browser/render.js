@@ -10,6 +10,6 @@ screens_1.default.UIRender = function () {
 };
 screens_1.default.UIRender.component = async (component) => {
     let Component = screens_1.default[component];
-    react_dom_1.default.hydrate(react_1.default.createElement(Component, null), document.body, undefined);
+    react_dom_1.default.hydrate(react_1.default.createElement(Component, null), document.getElementById("react"), undefined);
 };
 //# sourceMappingURL=render.js.map

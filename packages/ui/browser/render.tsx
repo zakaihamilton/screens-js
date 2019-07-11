@@ -8,5 +8,5 @@ screens.UIRender = function () {
 
 screens.UIRender.component = async (component: string) => {
     let Component = screens[component];
-    ReactDOM.hydrate(<Component />, document.body, undefined);
+    ReactDOM.hydrate(<Component />, document.getElementById("react"), undefined);
 };

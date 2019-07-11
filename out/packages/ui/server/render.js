@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const screens_1 = __importDefault(require("../../../lib/screens"));
-const server_1 = require("react-dom/server");
+const server_1 = __importDefault(require("react-dom/server"));
 const react_1 = __importDefault(require("react"));
 screens_1.default.UIRender = function () {
     this.title = "";
@@ -40,14 +40,16 @@ screens_1.default.UIRender = function () {
                 <script src="out/lib.js"></script>
                 <script src="out/packages.js"></script>
             </head>
-            <body onload="document.screens.init().then(function() {document.screens.UIRender.component('${component}')})">`;
+            <body onload="document.screens.init().then(function() {document.screens.UIRender.component('${component}')})">
+            <div id="react">`;
         res.write(html);
         let render = component ? react_1.default.createElement(Component, null) : react_1.default.createElement("div", null);
-        const stream = server_1.renderToNodeStream(render);
+        console.log(server_1.default.renderToString(render));
+        const stream = server_1.default.renderToNodeStream(render);
         stream.pipe(res, { end: false });
         return new Promise((resolve => {
             stream.on('end', () => {
-                res.write("\n</body>\n</html>");
+                res.write("</div>\n</body>\n</html>");
                 res.end();
                 resolve();
             });
