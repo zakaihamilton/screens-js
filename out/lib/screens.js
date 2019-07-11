@@ -116,6 +116,7 @@ if (typeof global !== "undefined") {
 }
 if (typeof document !== "undefined") {
     document.screens = screens;
+    document["screens-js"] = screens;
 }
 exports.default = screens;
 //# sourceMappingURL=screens.js.map

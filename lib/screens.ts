@@ -110,6 +110,7 @@ if (typeof global !== "undefined") {
 
 if (typeof document !== "undefined") {
     (document as any).screens = screens;
+    (document as any)["screens-js"] = screens;
 }
 
 export default screens as any;
