@@ -1,6 +1,6 @@
 {
     "name": "screens-js",
-    "version": "1.0.22",
+    "version": "1.0.23",
     "description": "Screens Framework",
     "main": "out/lib/screens.js",
     "types": "out/lib/screens.d.ts",

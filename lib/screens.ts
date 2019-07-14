@@ -20,7 +20,7 @@ var screens = {
         const attach = (me: any, compId: string, attachment: any) => {
             const comp = (screens as any)[compId];
             if (!comp) {
-                return undefined;
+                return;
             }
             me[compId] = attachment;
             if (comp.bind) {
@@ -33,16 +33,18 @@ var screens = {
                 }
             }
         };
-        object.me = new Proxy({}, {
-            get: function (obj: any, name: string) {
-                if (name in obj) {
-                    return obj[name];
+        if (!object.me) {
+            object.me = new Proxy({}, {
+                get: function (obj: any, name: string) {
+                    if (name in obj) {
+                        return obj[name];
+                    }
+                    const attachment = { me: object.me, id: name };
+                    attach(object.me, name, attachment);
+                    return attachment;
                 }
-                const attachment = { me: object.me, id: name };
-                attach(object.me, name, attachment);
-                return attachment;
-            }
-        });
+            });
+        }
         if (compId) {
             attach(object.me, compId, object);
         }
