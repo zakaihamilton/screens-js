@@ -10,6 +10,12 @@ screens.CoreHttp = function () {
     });
 };
 
+screens.CoreHttp.static = function () {
+    this.register = (pattern: RegExp, callback: any) => {
+        this.me.CoreRoute.register(pattern, callback);
+    };
+};
+
 screens.CoreHttp.init = function () {
     let routes = this.me.CoreRoute;
     const server = http.createServer((req, res) => {
@@ -23,5 +29,4 @@ screens.CoreHttp.init = function () {
     });
     let port = process.env.PORT || 8080;
     server.listen(port);
-    this.register = this.me.CoreRoute.register;
 };

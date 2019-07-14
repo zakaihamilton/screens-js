@@ -21,7 +21,7 @@ screens.CoreAsset = function () {
 
 };
 
-screens.CoreAsset.init = function () {
+screens.CoreAsset.static = function () {
     this.mapping = [
         {
             mime: "text/css",
@@ -152,25 +152,26 @@ screens.CoreAsset.init = function () {
         }
         return buffer;
     };
-    setTimeout(() => {
-        this.mapping.map((mapping: mapping) => {
-            if (mapping.text && mapping.text.template) {
-                let filePath = path.resolve(__dirname, mapping.text.template);
-                mapping.text.template = fs.readFileSync(filePath, "utf8");
-            }
-            screens.CoreHttp.register(mapping.pattern, async (me: any) => {
-                const { req, res } = me.CoreHttp;
-                const headers: any = {
-                    "Access-Control-Allow-Methods": "*",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "*",
-                    "Content-Type": mapping.mime
-                };
-                let root = req.url.substr(1).split("?")[0];
-                res.writeHead(200, headers);
-                let buffer = await this.file(root, mapping);
-                res.end(buffer);
-            });
+};
+
+screens.CoreAsset.init = function () {
+    this.mapping.map((mapping: mapping) => {
+        if (mapping.text && mapping.text.template) {
+            let filePath = path.resolve(__dirname, mapping.text.template);
+            mapping.text.template = fs.readFileSync(filePath, "utf8");
+        }
+        screens.CoreHttp.register(mapping.pattern, async (me: any) => {
+            const { req, res } = me.CoreHttp;
+            const headers: any = {
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+                "Content-Type": mapping.mime
+            };
+            let root = req.url.substr(1).split("?")[0];
+            res.writeHead(200, headers);
+            let buffer = await this.file(root, mapping);
+            res.end(buffer);
         });
     });
 };

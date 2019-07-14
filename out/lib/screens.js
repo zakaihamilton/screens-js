@@ -11,15 +11,21 @@ var screens = {
     init() {
         const components = Object.entries(screens).filter(([key, comp]) => /^[A-Z]/.test(key[0]));
         components.map(([key, comp]) => screens.objectify(comp, ""));
+        components.map(item => {
+            const [key, comp] = item;
+            if (comp.static) {
+                comp.static.call(comp);
+            }
+        });
         return Promise.all(components.map(async (item) => {
             const [key, comp] = item;
-            if (comp.isInitialized) {
+            if (comp._isInitialized) {
                 return;
             }
             if (comp.init) {
                 await comp.init.call(comp);
             }
-            comp.isInitialized = true;
+            comp._isInitialized = true;
             return key;
         }));
     },

@@ -20,6 +20,11 @@ screens_1.default.CoreHttp = function () {
         }
     });
 };
+screens_1.default.CoreHttp.static = function () {
+    this.register = (pattern, callback) => {
+        this.me.CoreRoute.register(pattern, callback);
+    };
+};
 screens_1.default.CoreHttp.init = function () {
     let routes = this.me.CoreRoute;
     const server = http.createServer((req, res) => {
@@ -33,6 +38,5 @@ screens_1.default.CoreHttp.init = function () {
     });
     let port = process.env.PORT || 8080;
     server.listen(port);
-    this.register = this.me.CoreRoute.register;
 };
 //# sourceMappingURL=http.js.map

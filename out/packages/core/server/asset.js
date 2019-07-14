@@ -15,7 +15,7 @@ const path = __importStar(require("path"));
 const screens_1 = __importDefault(require("../../../lib/screens"));
 screens_1.default.CoreAsset = function () {
 };
-screens_1.default.CoreAsset.init = function () {
+screens_1.default.CoreAsset.static = function () {
     this.mapping = [
         {
             mime: "text/css",
@@ -141,25 +141,25 @@ screens_1.default.CoreAsset.init = function () {
         }
         return buffer;
     };
-    setTimeout(() => {
-        this.mapping.map((mapping) => {
-            if (mapping.text && mapping.text.template) {
-                let filePath = path.resolve(__dirname, mapping.text.template);
-                mapping.text.template = fs.readFileSync(filePath, "utf8");
-            }
-            screens_1.default.CoreHttp.register(mapping.pattern, async (me) => {
-                const { req, res } = me.CoreHttp;
-                const headers = {
-                    "Access-Control-Allow-Methods": "*",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "*",
-                    "Content-Type": mapping.mime
-                };
-                let root = req.url.substr(1).split("?")[0];
-                res.writeHead(200, headers);
-                let buffer = await this.file(root, mapping);
-                res.end(buffer);
-            });
+};
+screens_1.default.CoreAsset.init = function () {
+    this.mapping.map((mapping) => {
+        if (mapping.text && mapping.text.template) {
+            let filePath = path.resolve(__dirname, mapping.text.template);
+            mapping.text.template = fs.readFileSync(filePath, "utf8");
+        }
+        screens_1.default.CoreHttp.register(mapping.pattern, async (me) => {
+            const { req, res } = me.CoreHttp;
+            const headers = {
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+                "Content-Type": mapping.mime
+            };
+            let root = req.url.substr(1).split("?")[0];
+            res.writeHead(200, headers);
+            let buffer = await this.file(root, mapping);
+            res.end(buffer);
         });
     });
 };
