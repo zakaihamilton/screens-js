@@ -8,17 +8,24 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var screens = {
-    init() {
-        const components = Object.entries(screens).filter(([key, comp]) => /^[A-Z]/.test(key[0]));
+    async init(object, name) {
+        let components = Object.entries(object || screens).filter(([key, comp]) => /^[A-Z]/.test(key[0]));
         components.map(([key, comp]) => screens.objectify(comp, ""));
-        components.map(item => {
+        await Promise.all(components.map(async (item) => {
             const [key, comp] = item;
-            comp.displayName = key;
+            let compName = key;
+            if (name) {
+                compName = name + "." + key;
+            }
+            Object.defineProperty(comp, 'name', {
+                value: compName
+            });
             if (comp.static) {
                 comp.static.call(comp);
             }
-        });
-        return Promise.all(components.map(async (item) => {
+            this.init(comp, compName);
+        }));
+        await Promise.all(components.map(async (item) => {
             const [key, comp] = item;
             if (comp._isInitialized) {
                 return;
@@ -117,7 +124,7 @@ var screens = {
     },
     async startup() {
         await screens.import("../packages", __dirname, async (path) => await Promise.resolve().then(() => __importStar(require(path))));
-        return screens.init();
+        await screens.init();
     }
 };
 if (typeof global !== "undefined") {

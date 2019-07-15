@@ -1,17 +1,24 @@
 declare var __dirname: any;
 
 var screens = {
-    init() {
-        const components = Object.entries(screens).filter(([key, comp]) => /^[A-Z]/.test(key[0]));
+    async init(object?: any, name?: string) {
+        let components = Object.entries(object || screens).filter(([key, comp]) => /^[A-Z]/.test(key[0]));
         components.map(([key, comp]) => screens.objectify(comp, ""));
-        components.map(item => {
+        await Promise.all(components.map(async item => {
             const [key, comp]: [string, any] = item;
-            comp.displayName = key;
+            let compName = key;
+            if (name) {
+                compName = name + "." + key;
+            }
+            Object.defineProperty(comp, 'name', {
+                value: compName
+            });
             if (comp.static) {
                 comp.static.call(comp);
             }
-        });
-        return Promise.all(components.map(async item => {
+            this.init(comp, compName);
+        }));
+        await Promise.all(components.map(async item => {
             const [key, comp]: [string, any] = item;
             if (comp._isInitialized) {
                 return;
@@ -107,9 +114,9 @@ var screens = {
             });
         }
     },
-    async startup(): Promise<object> {
+    async startup() {
         await screens.import("../packages", __dirname, async (path) => await import(path));
-        return screens.init();
+        await screens.init();
     }
 }
 
