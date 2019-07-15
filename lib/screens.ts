@@ -6,6 +6,7 @@ var screens = {
         components.map(([key, comp]) => screens.objectify(comp, ""));
         components.map(item => {
             const [key, comp]: [string, any] = item;
+            comp.displayName = key;
             if (comp.static) {
                 comp.static.call(comp);
             }
