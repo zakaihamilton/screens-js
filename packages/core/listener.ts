@@ -18,6 +18,6 @@ screens.CoreListener = function () {
     this.notify = (compId: string, name: string, ...args: any) => {
         const comp = this.listeners[compId] || {};
         const listeners = comp[name] || [];
-        listeners.map((listener: any) => listener.apply(this.me[compId], args));
+        listeners.map((listener: any) => listener.apply(this, args));
     }
 };

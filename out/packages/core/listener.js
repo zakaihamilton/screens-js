@@ -22,7 +22,7 @@ screens_1.default.CoreListener = function () {
     this.notify = (compId, name, ...args) => {
         const comp = this.listeners[compId] || {};
         const listeners = comp[name] || [];
-        listeners.map((listener) => listener.apply(this.me[compId], args));
+        listeners.map((listener) => listener.apply(this, args));
     };
 };
 //# sourceMappingURL=listener.js.map

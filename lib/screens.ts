@@ -53,7 +53,7 @@ var screens = {
                     if (name in obj) {
                         return obj[name];
                     }
-                    const attachment = { me: object.me, _id: name };
+                    const attachment = { me: object.me, name };
                     attach(object.me, name, attachment);
                     return attachment;
                 }
