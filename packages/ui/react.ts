@@ -31,4 +31,8 @@ screens.UIReact.static = function () {
         }
         return string.trim();
     }
+    this.styles = function (styles: any) {
+        Object.keys(styles).forEach(key => styles[key] === undefined && delete styles[key]);
+        return styles;
+    }
 }

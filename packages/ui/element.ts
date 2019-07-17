@@ -3,7 +3,9 @@ import React from 'react';
 
 screens.UIElement = function () {
     this.me.CoreListener.register("UIReact", "render", () => {
-        this.ref = React.createRef();
+        if (!this.ref) {
+            this.ref = React.createRef();
+        }
     });
     this.render = () => {
         if (this.ref && this.ref.current) {

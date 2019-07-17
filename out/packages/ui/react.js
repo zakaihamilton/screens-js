@@ -33,5 +33,9 @@ screens_1.default.UIReact.static = function () {
         }
         return string.trim();
     };
+    this.styles = function (styles) {
+        Object.keys(styles).forEach(key => styles[key] === undefined && delete styles[key]);
+        return styles;
+    };
 };
 //# sourceMappingURL=react.js.map

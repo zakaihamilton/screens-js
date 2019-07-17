@@ -7,7 +7,9 @@ const screens_1 = __importDefault(require("../../lib/screens"));
 const react_1 = __importDefault(require("react"));
 screens_1.default.UIElement = function () {
     this.me.CoreListener.register("UIReact", "render", () => {
-        this.ref = react_1.default.createRef();
+        if (!this.ref) {
+            this.ref = react_1.default.createRef();
+        }
     });
     this.render = () => {
         if (this.ref && this.ref.current) {
